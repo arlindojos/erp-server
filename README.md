@@ -1,6 +1,9 @@
 # erp-server
 Processamento de salários
 
+
+[] store time worked by the employee to calculate on a pay day
+
 [ ] Calculate paychecks and taxes
     [ ] allowances 
       - Holiday pay
@@ -8,6 +11,7 @@ Processamento de salários
       - Work cover (eg. if have accident at work)
     [ ] deductions
       - INCS
+      - loans
     [ ] Calculate overtime pay
 
 [ ] Calculate overtime pay
