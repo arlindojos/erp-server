@@ -6,15 +6,15 @@ Processamento de salários
 
 [ ] Calculate paychecks and taxes
     [ ] allowances 
-      - Holiday pay
       - Leave pay 
       - Work cover (eg. if have accident at work)
     [ ] deductions
       - INCS
       - loans
-    [ ] Calculate overtime pay
 
 [ ] Calculate overtime pay
+  - Vacation pay
+  - Holiday pay
     
 [ ] Auto Payroll 
 [ ] Add your accountant or bookkeeper

@@ -33,7 +33,7 @@ app.set('trust proxy', 1);
 app.use(helmet());
 app.use(express.json()); 
 
-app.use('/ogolfim/api/v1', routes);
+app.use('/erp/api/v1', routes);
 
 app.use('/uploads/images', express.static(path.join(__dirname, '..', 'uploads', 'images')));
 app.use('/uploads/pdfs', express.static(path.join(__dirname, '..', 'uploads', 'pdfs')));

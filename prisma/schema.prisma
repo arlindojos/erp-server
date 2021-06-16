@@ -16,10 +16,8 @@ model companies {
   website           String?
   employees         employees[]
   description       String?
-  bank_account      bank_accounts?      @relation(fields: [bank_account_id], references: [id])
-  bank_account_id   String?
-  address           address?            @relation(fields: [address_id], references: [id])
-  address_id        Int?
+  bank_account      bank_accounts?
+  address           address?
   companiesToAdmins companiesToAdmins[]
   created_at        DateTime            @default(now())
   updated_at        DateTime            @default(now())
@@ -27,33 +25,33 @@ model companies {
 
 model companiesToAdmins {
   id               Int              @id @default(autoincrement())
-  company_admin_id String
-  company_id       String
   company          companies        @relation(fields: [company_id], references: [id])
+  company_id       String
   company_admin    companies_admins @relation(fields: [company_admin_id], references: [id])
+  company_admin_id String
 }
 
 model roles {
   id         Int         @id @default(autoincrement())
   role       String      @unique
   employee   employees[]
-  salary     Int
   created_at DateTime    @default(now())
   updated_at DateTime    @default(now())
 }
 
 model salaries {
-  id           Int           @id @default(autoincrement())
-  payment_type payment_type?
-  allowances   allowances[]
-  deductions   deductions[]
-  employee     employees     @relation(fields: [employee_id], references: [id])
-  employee_id  String
-  created_at   DateTime      @default(now())
-  updated_at   DateTime      @default(now())
+  id                Int           @id @default(autoincrement())
+  pay_type          pay_type @relation(fields: [pay_type_id], references: [id])
+  pay_type_id       Int
+  allowances        allowances[]
+  deductions        deductions[]
+  employee          employees     @relation(fields: [employee_id], references: [id])
+  employee_id       String
+  created_at        DateTime      @default(now())
+  updated_at        DateTime      @default(now())
 }
 
-model payment_type {
+model pay_type {
   id            Int      @id @default(autoincrement())
   type          String   @default("Hourly")
   pay_salary    Int?
@@ -61,8 +59,7 @@ model payment_type {
   hours_per_day Int?
   days_per_week Int
   pay_date      DateTime
-  salaries      salaries @relation(fields: [salary_id], references: [id])
-  salary_id     Int
+  salaries      salaries?
   created_at    DateTime @default(now())
   updated_at    DateTime @default(now())
 }
@@ -83,7 +80,7 @@ model deductions {
   description String?
   amount      Int?
   percentage  Int?
-  salaries    salaries @relation(fields: [salary_id], references: [id])
+  salary      salaries @relation(fields: [salary_id], references: [id])
   salary_id   Int
   created_at  DateTime @default(now())
   updated_at  DateTime @default(now())
@@ -91,10 +88,10 @@ model deductions {
 
 model allowances {
   id          Int      @id @default(autoincrement())
-  name        String
+  name        String   
   description String?
   amount      Int
-  salaries    salaries @relation(fields: [salary_id], references: [id])
+  salary      salaries @relation(fields: [salary_id], references: [id])
   salary_id   Int
   created_at  DateTime @default(now())
   updated_at  DateTime @default(now())
@@ -105,11 +102,12 @@ model bank_accounts {
   name        String
   account_n   Int
   nib         Int
-  employee    employees?  @relation(fields: [employee_id], references: [id])
+  company     companies?  @relation(fields: [company_id], references: [id])
+  company_id  String
+  employee    employees   @relation(fields: [employee_id], references: [id]) 
   employee_id String
   created_at  DateTime    @default(now())
   updated_at  DateTime    @default(now())
-  companies   companies[]
 }
 
 model inss {
@@ -131,8 +129,7 @@ model companies_admins {
   tel2              String?
   genders           genders?            @relation(fields: [gender_id], references: [id])
   gender_id         Int?
-  address           address?            @relation(fields: [address_id], references: [id])
-  address_id        Int?
+  address           address?
   companiesToAdmins companiesToAdmins[]
   owner             Boolean             @default(false)
   admin             Boolean             @default(false)
@@ -151,31 +148,37 @@ model employees {
   education     String?
   born          DateTime?
   marred        Boolean         @default(false)
-  mother        mothers?        @relation(fields: [mother_id], references: [id])
-  mother_id     String?
-  father        fathers?        @relation(fields: [father_id], references: [id])
-  father_id     String?
-  spouse        spouses?        @relation(fields: [spouse_id], references: [id])
-  spouse_id     String?
-  bi            bi?             @relation(fields: [bi_id], references: [id])
-  bi_id         String?
+  mother        mothers? 
+  father        fathers? 
+  spouse        spouses?
+  bi            bi? 
   genders       genders?        @relation(fields: [gender_id], references: [id])
   gender_id     Int?
-  address       address?        @relation(fields: [address_id], references: [id])
-  address_id    Int?
-  companies     companies?      @relation(fields: [company_id], references: [id])
-  company_id    String?
+  address       address? 
+  company       companies?      @relation(fields: [company_id], references: [id]) 
+  company_id    String
   hire_date     DateTime
-  pay_date      DateTime
+  pay_schedule  pay_schedule    @relation(fields: [pay_schedule_id], references: [id])
+  pay_schedule_id Int
   role          roles           @relation(fields: [role_id], references: [id])
   role_id       Int
   inss          inss?
   salaries      salaries?
   overtime      overtimes?
   pre_emproyee  pre_emproyee?
+  bank_account  bank_accounts?
   created_at    DateTime        @default(now())
   updated_at    DateTime        @default(now())
-  bank_accounts bank_accounts[]
+}
+
+model pay_schedule {
+  id                Int             @id @default(autoincrement())
+  name              String          @unique
+  pay_frequency     String          @default("Monthly")
+  pay_date          DateTime 
+  employees         employees[]
+  created_at        DateTime        @default(now())
+  updated_at        DateTime        @default(now())
 }
 
 model pre_emproyee {
@@ -191,69 +194,62 @@ model pre_emproyee {
 }
 
 model spouses {
-  id         String      @id @default(uuid())
-  name       String
-  l_name     String?
-  email      String?     @unique
-  tel        String?
-  tel2       String?
-  education  String?
-  profession String?
-  born       DateTime?
-  dead       Boolean     @default(false)
-  bi         bi?         @relation(fields: [bi_id], references: [id])
-  bi_id      String?
-  genders    genders?    @relation(fields: [gender_id], references: [id])
-  gender_id  Int?
-  address    address?    @relation(fields: [address_id], references: [id])
-  employees  employees[]
-  address_id Int?
-  created_at DateTime    @default(now())
-  updated_at DateTime    @default(now())
+  id            Int      @id @default(autoincrement())
+  name          String
+  l_name        String?
+  email         String?     @unique
+  tel           String?
+  tel2          String?
+  education     String?
+  profession    String?
+  born          DateTime?
+  dead          Boolean     @default(false)
+  bi            bi? 
+  genders       genders?    @relation(fields: [gender_id], references: [id])
+  gender_id     Int?
+  address       address? 
+  employee      employees  @relation(fields: [employee_id], references: [id])
+  employee_id   String
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @default(now())
 }
 
 model mothers {
-  id         String      @id @default(uuid())
-  name       String
-  l_name     String?
-  email      String?     @unique
-  tel        String?
-  tel2       String?
-  education  String?
-  profession String?
-  born       DateTime?
-  dead       Boolean     @default(false)
-  bi         bi?         @relation(fields: [bi_id], references: [id])
-  bi_id      String?
-  genders    genders?    @relation(fields: [gender_id], references: [id])
-  gender_id  Int?
-  address    address?    @relation(fields: [address_id], references: [id])
-  employees  employees[]
-  address_id Int?
-  created_at DateTime    @default(now())
-  updated_at DateTime    @default(now())
+  id            Int      @id @default(autoincrement())
+  name          String
+  l_name        String?
+  email         String?     @unique
+  tel           String?
+  tel2          String?
+  education     String?
+  profession    String?
+  born          DateTime?
+  dead          Boolean     @default(false)
+  bi            bi?   
+  address       address? 
+  employee      employees  @relation(fields: [employee_id], references: [id])
+  employee_id   String
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @default(now())
 }
 
 model fathers {
-  id         String      @id @default(uuid())
-  name       String
-  l_name     String?
-  email      String?     @unique
-  tel        String?
-  tel2       String?
-  education  String?
-  profession String?
-  born       DateTime?
-  dead       Boolean     @default(false)
-  bi         bi?         @relation(fields: [bi_id], references: [id])
-  bi_id      String?
-  genders    genders?    @relation(fields: [gender_id], references: [id])
-  gender_id  Int?
-  address    address?    @relation(fields: [address_id], references: [id])
-  employees  employees[]
-  address_id Int?
-  created_at DateTime    @default(now())
-  updated_at DateTime    @default(now())
+  id            Int      @id @default(autoincrement())
+  name          String
+  l_name        String?
+  email         String?     @unique
+  tel           String?
+  tel2          String?
+  education     String?
+  profession    String?
+  born          DateTime?
+  dead          Boolean     @default(false)
+  bi            bi? 
+  address       address? 
+  employee      employees  @relation(fields: [employee_id], references: [id])
+  employee_id   String
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @default(now())
 }
 
 model bi {
@@ -261,32 +257,45 @@ model bi {
   issued_in     String
   issuance_date DateTime
   expiry_date   DateTime
-  employee      employees?
-  spouse        spouses?
-  mother        mothers?
-  father        fathers?
-  created_at    DateTime   @default(now())
-  updated_at    DateTime   @default(now())
+  employee      employees?  @relation(fields: [employee_id], references: [id])
+  employee_id   String?
+  spouse        spouses?    @relation(fields: [spouse_id], references: [id])
+  spouse_id     Int?
+  mother        mothers?    @relation(fields: [mother_id], references: [id])
+  mother_id     Int?
+  father        fathers?    @relation(fields: [father_id], references: [id])
+  father_id     Int?
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @default(now())
 }
 
 model address {
-  id             Int               @id @default(autoincrement())
-  provinces      provinces?        @relation(fields: [province_id], references: [id])
-  province_id    Int
-  districts      districts?        @relation(fields: [district_id], references: [id])
-  district_id    Int
-  bairro         bairros?          @relation(fields: [bairro_id], references: [id])
-  bairro_id      Int
-  block          Int?
-  house          Int?
-  companie_admin companies_admins?
-  spouses        spouses?
-  mother         mothers?
-  father         fathers?
-  employee       employees?
-  companies      companies?
-  created_at     DateTime          @default(now())
-  updated_at     DateTime          @default(now())
+  id              Int               @id @default(autoincrement())
+  provinces       provinces?        @relation(fields: [province_id], references: [id])
+  province_id     Int
+  districts       districts?        @relation(fields: [district_id], references: [id])
+  district_id     Int
+  bairro          bairros?          @relation(fields: [bairro_id], references: [id])
+  bairro_id       Int
+  roud            Int?
+  andar           Int?
+  flat            Int?
+  block           Int?
+  house           Int?
+  companie_admin  companies_admins? @relation(fields: [companie_admin_id], references: [id])
+  companie_admin_id String
+  spouse          spouses?          @relation(fields: [spouse_id], references: [id])
+  spouse_id       Int
+  mother          mothers?          @relation(fields: [mother_id], references: [id])
+  mother_id       Int
+  father          fathers?          @relation(fields: [father_id], references: [id])
+  father_id       Int
+  employee        employees?        @relation(fields: [employee_id], references: [id])
+  employee_id     String
+  companie        companies?        @relation(fields: [company_id], references: [id])
+  company_id      String
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @default(now())
 }
 
 model genders {
@@ -295,8 +304,6 @@ model genders {
   companies_admins companies_admins[]
   employees        employees[]
   spouses          spouses[]
-  mother           mothers[]
-  father           fathers[]
 }
 
 model provinces {
