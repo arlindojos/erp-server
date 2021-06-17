@@ -127,9 +127,6 @@ model companies_admins {
   email             String              @unique
   tel               String
   tel2              String?
-  genders           genders?            @relation(fields: [gender_id], references: [id])
-  gender_id         Int?
-  address           address?
   companiesToAdmins companiesToAdmins[]
   owner             Boolean             @default(false)
   admin             Boolean             @default(false)
@@ -275,21 +272,13 @@ model address {
   province_id     Int
   districts       districts?        @relation(fields: [district_id], references: [id])
   district_id     Int
-  bairro          bairros?          @relation(fields: [bairro_id], references: [id])
-  bairro_id       Int
-  roud            Int?
-  andar           Int?
-  flat            Int?
-  block           Int?
-  house           Int?
-  companie_admin  companies_admins? @relation(fields: [companie_admin_id], references: [id])
-  companie_admin_id String
+  address_t       String
   spouse          spouses?          @relation(fields: [spouse_id], references: [id])
   spouse_id       Int
   mother          mothers?          @relation(fields: [mother_id], references: [id])
   mother_id       Int
   father          fathers?          @relation(fields: [father_id], references: [id])
-  father_id       Int
+  father_id       Int?
   employee        employees?        @relation(fields: [employee_id], references: [id])
   employee_id     String
   companie        companies?        @relation(fields: [company_id], references: [id])
@@ -301,7 +290,6 @@ model address {
 model genders {
   id               Int                @id @default(autoincrement())
   gender           String             @unique
-  companies_admins companies_admins[]
   employees        employees[]
   spouses          spouses[]
 }
@@ -319,20 +307,9 @@ model districts {
   id          Int       @id @default(autoincrement())
   name        String
   Zip_code    Int?
-  bairro      bairros[]
   provinces   provinces @relation(fields: [province_id], references: [id])
   province_id Int
   address     address?
-  created_at  DateTime  @default(now())
-  updated_at  DateTime  @default(now())
-}
-
-model bairros {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique
-  districts   districts @relation(fields: [district_id], references: [id])
-  district_id Int
-  address     address[]
   created_at  DateTime  @default(now())
   updated_at  DateTime  @default(now())
 }
