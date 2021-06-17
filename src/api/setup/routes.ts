@@ -11,7 +11,7 @@ const setupRoutes = Router();
 setupRoutes.use(cookieParser());
 
 setupRoutes.post('/admin', adminValidator, adminsController.create);
-setupRoutes.get('/admin', isOwner, adminsController.index);
+setupRoutes.get('/admin', adminsController.index);
 
 setupRoutes.post('/company', isOwner, companiesValidator, companiesController.create);
 

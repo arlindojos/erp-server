@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import createAdmin from '../../../../entity/admin/createAdmin';
 import findAdmin from '../../../../entity/admin/findAdmin';
-import { createAccessToken } from '../../../../lib/auth/createToken';
+import { createAccessToken } from '../../../../lib/auth/token';
 
 
 export default {
@@ -44,7 +44,10 @@ export default {
     response.cookie(
       'dreams', 
       token, 
-      { httpOnly: true, maxAge: 60 * 60 }
+      { 
+        httpOnly: true, 
+        maxAge: 60 * 60
+      }
     );
 
     response.status(201).json(token);
