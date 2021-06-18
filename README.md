@@ -11,8 +11,9 @@ Processamento de salários
       - Work cover (eg. if have accident at work)
       
     [ ] deductions
-      - INCS
+      - INSS
       - loans
+      - I RPS
 
 [ ] Calculate overtime pay
   - Vacation pay
@@ -27,5 +28,7 @@ Processamento de salários
 
 salary = grass_salary - deductions + allowances + Overtime pay
 
+Employee = salary[]
 
-Employee = salary[] 
+
+30 dias ==> 1 ano

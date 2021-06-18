@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import createAdmin from '../../../../entity/admin/createAdmin';
 import findAdmin from '../../../../entity/admin/findAdmin';
-import { createAccessToken } from '../../../../lib/auth/token';
+import { createToken } from '../../../../lib/auth/token';
 
 
 export default {
@@ -22,10 +22,10 @@ export default {
       admin: true
     })
 
-    const token = createAccessToken(newAdmin);
+    const token = createToken(newAdmin);
 
     response.cookie(
-      'dreams', 
+      'token', 
       token, 
       { httpOnly: true, maxAge: 60 * 60 }
     );
@@ -39,14 +39,15 @@ export default {
     if(!admin)
     return response.status(404).json({error: 'Admin not found' });
     
-    const token = createAccessToken(admin);
+    const token = createToken(admin);
 
     response.cookie(
-      'dreams', 
+      'token', 
       token, 
       { 
         httpOnly: true, 
-        maxAge: 60 * 60
+        maxAge: 60 * 60,
+        // secure: true
       }
     );
 

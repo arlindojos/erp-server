@@ -1,25 +1,42 @@
-import { sign, verify } from "jsonwebtoken";
+import { sign } from "jsonwebtoken";
 import { companies_admins } from "@prisma/client";
 
-export const createAccessToken = (admin: companies_admins) => {
-  return sign({
-    id: admin.id, 
-    admin: admin.admin, 
-    owner: admin.owner
-  }, 
-  process.env.ACCESS_TOKEN_SECRET!,
-  {
-    expiresIn: '60m',
-    algorithm: 'ES256',
-  })
+export interface Payload {
+  id: string, 
+  isAdmin: boolean, 
+  isOwner: boolean
 }
 
-export const verifyAccessToken = (token: string) => {
-  return verify(
-    token,
+export const createToken = (admin: companies_admins) => {
+  const payload: Payload = {
+    id: admin.id, 
+    isAdmin: admin.admin, 
+    isOwner: admin.owner
+  }
+
+  return sign(
+    payload, 
     process.env.ACCESS_TOKEN_SECRET!,
-  {
-    maxAge: '60m',
-    algorithms: ['ES256']
-  })
+    {
+      expiresIn: '5s',
+      algorithm: 'HS256'
+    }
+  )
+}
+
+export const createRefreshToken = (admin: companies_admins) => {
+  const payload: Payload = {
+    id: admin.id, 
+    isAdmin: admin.admin, 
+    isOwner: admin.owner
+  }
+
+  return sign(
+    payload, 
+    process.env.ACCESS_TOKEN_SECRET!,
+    {
+      expiresIn: '7d',
+      algorithm: 'HS256'
+    }
+  )
 }

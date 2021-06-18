@@ -10,8 +10,6 @@ import routes from './routes';
 
 import errorHandler from './validations/handler/handler';
 
-
-
 dotenvExpand(config());
 
 const app = express();
