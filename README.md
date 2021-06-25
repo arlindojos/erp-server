@@ -1,5 +1,8 @@
-# erp-server
-Processamento de salários
+<p align="left">
+  <img alt="Fyle" src="https://www.ogolfim.space/uploads/images/logo-dark.png" width="160" />
+</p>
+
+## payroll processing
 
 
 [] store time worked by the employee to calculate on a pay day
@@ -31,4 +34,13 @@ salary = grass_salary - deductions + allowances + Overtime pay
 Employee = salary[]
 
 
-30 dias ==> 1 ano
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+```
+
